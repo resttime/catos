@@ -11,30 +11,18 @@
     mov sp, bp
 
 string:
-    push '!'
-    push 'd'
-    push 'l'
-    push 'r'
-    push 'o'
-    push 'W'
-    push ' '
-    push 'o'
-    push 'l'
-    push 'l'
-    push 'e'
-    push 'H'
-
-len: equ 12
-    mov cx, len
+    db 'Hello World!',0
+    mov bx, string
     
 print:
-    pop bx
-    mov al, bl
+    mov al, [bx]
+    cmp al, 0
+    je end
     int 0x10
-    dec cx
-    cmp cx, 0
-    jne print
+    inc bx
+    jmp print
 
+end:
 ;; Infinite loop, $ means the current line
     jmp $
 
