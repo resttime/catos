@@ -4,48 +4,39 @@
 ;; https://en.wikipedia.org/wiki/INT_10H
 ;; Using the 0x10h BIOS interrupt
 
-;; Print using 'teletype output'
+;; Print using 'teletype output' and stack
     mov ah, 0x0e
-    mov al, 'W'
-    int 0x10
-    mov al, 'o'
-    int 0x10
-    mov al, 'r'
-    int 0x10
-    mov al, 'l'
-    int 0x10
-    mov al, 'd'
-    int 0x10
-    mov al, ' '
-    int 0x10
-    mov al, 'H'
-    int 0x10
-    mov al, 'e'
-    int 0x10
-    mov al, 'l'
-    int 0x10
-    mov al, 'l'
-    int 0x10
-    mov al, 'o'
-    int 0x10
-    mov al, '!'
-    int 0x10
 
-;; Print using 'write string'
-    mov ah, 0x13
-    mov bl, 0xa                 ; Color (10: Light Green)
-    mov al, 0                   ; Write mode (1: don't move cursor)
-    mov dh, 9                   ; Row
-    mov dl, 0                   ; Col
-    mov cx, len                 ; String length
-    mov ebp, msg                ; Location string
+    mov bp, 0x8000              ; Free memory location
+    mov sp, bp
+
+string:
+    push '!'
+    push 'd'
+    push 'l'
+    push 'r'
+    push 'o'
+    push 'W'
+    push ' '
+    push 'o'
+    push 'l'
+    push 'l'
+    push 'e'
+    push 'H'
+
+len: equ 12
+    mov cx, len
+    
+print:
+    pop bx
+    mov al, bl
     int 0x10
+    dec cx
+    cmp cx, 0
+    jne print
 
 ;; Infinite loop, $ means the current line
     jmp $
-
-msg: db "Hello World!"
-len: equ ($-msg)
 
 ;; Pad up with zeros and magic number to 512
     times 510-($-$$) db 0
