@@ -4,28 +4,28 @@
 ;; https://en.wikipedia.org/wiki/INT_10H
 ;; Using the 0x10h BIOS interrupt
 
-;; Print using 'teletype output' and stack
-    mov ah, 0x0e
-
-    mov bp, 0x8000              ; Free memory location
-    mov sp, bp
-
-string:
-    db 'Hello World!',0
     mov bx, string
-    
-print:
-    mov al, [bx]
-    cmp al, 0
-    je end
-    int 0x10
-    inc bx
-    jmp print
-
-end:
+    call print_string
 ;; Infinite loop, $ means the current line
     jmp $
 
+;; Print using 'teletype output' and stack
+print_string:
+    pusha                       ; Push all regs
+    mov ah, 0x0e
+    mov al, [bx]
+    or al, al
+    jz print_end
+    int 0x10                    ; Print interrupt
+    inc bx
+    jmp print_string
+print_end:
+    popa                        ; Pop all regs and return
+    ret
+
+string:
+    db 'Hello World!',0
+    
 ;; Pad up with zeros and magic number to 512
     times 510-($-$$) db 0
     dw 0xaa55
