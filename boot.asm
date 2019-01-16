@@ -7,64 +7,21 @@
 ;; Put stack someplace that won't overwrite things
     mov bp, 0x8000
     mov sp, bp
-
-;; Print hello
+;; Print
     mov bx, hello
     call print_string
-
-;; Print bye
+;; Print
     mov bx, bye
     call print_string
-
-;; Print hex test
+;; Print
     mov dx, 0x1fb6
     call print_hex
-
-;; Print alternative hex test
-    push dx
-    shr dx, 8
-    call print_hex_lower
-    pop dx
-    call print_hex_lower
-
 ;; Infinite loop, $ means the current line
     jmp $
 
-;; Print dl hex
-print_hex_lower:
-    push dx
-    push bx
-    push ax
-
-    mov ax, 0
-    push ax
-
-    mov bx, dx
-    and bx, 0xF
-    add bx, hex
-    mov ah, [bx]
-
-    mov bx, dx
-    shr bx, 4
-    and bx, 0xF
-    add bx, hex
-    mov al, [bx]
-    push ax
-
-    ; Call print string on the stack
-    mov bx, sp
-    call print_string
-
-    pop ax
-    pop ax
-    pop ax
-    pop bx
-    pop dx
-    ret
-    
 ;; Print hex stored in dx
 print_hex:
-    ; Save registers to stack
+    ; Save stack
     push ax
     push bx
 
