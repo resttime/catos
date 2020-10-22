@@ -76,6 +76,17 @@ print_string:
     inc bx
     jmp print_string
     ret
+
+;; Prints a newline and returnline
+print_newline:
+    push ax
+    mov al, 10
+    call print_char
+    mov al, 13
+    call print_char
+    pop ax
+    ret
+
 ;; Prints the character in al
 print_char:
     mov ah, 0x0e
