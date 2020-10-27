@@ -1,3 +1,21 @@
+[bits 16]
+;; tests
+test_print:
+    push bx
+    push dx
+    mov bx, hello
+    call print_string
+
+    mov bx, bye
+    call print_string
+
+    mov dx, 0x1fb6
+    call print_hex
+
+    pop dx
+    pop bx
+    ret
+
 ;; Print hex stored in dx
 print_hex:
     ; save registers
@@ -99,4 +117,28 @@ print_char:
     int 0x10
     ret
 
+;; Print for 32bit protected mode
+[bits 32]
+
+VIDEO_MEMORY: equ 0xb8000
+WHITE_ON_BLACK: equ 0x0f
+
+;; prints the string at edx
+print_string32:
+    pusha                       ; push all registers
+    mov edx, VIDEO_MEMORY
+print_string32_loop:
+    mov al, [ebx]               ; put char in memory
+    mov ah, WHITE_ON_BLACK      ; set color
+    cmp al, 0                   ; check for null char
+    je print_string32_done      ; nullchar means we're done
+    mov [edx], ax               ; move the char,attr pair into memory
+    add ebx, 1                  ; increment ebx to the next char
+    add edx, 2                  ; move to next char
+    jmp print_string32_loop     ; repeat
+print_string32_done:
+    popa                        ; pop all registers
+    ret
 hex: db '0123456789abcdef'
+hello: db 'Hello world!',10,13,0
+bye: db 'Bye bye!',10,13,0

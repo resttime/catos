@@ -5,7 +5,6 @@
 ;; Using the 0x10h BIOS interrupt
 
 ;; Place the stack where it won't ovewrite things
-;; 0x8000 is EBDA (Extended BIOS Data Area)
     mov bp, 0x8000
     mov sp, bp
 
@@ -13,6 +12,7 @@
     mov [BOOT_DRIVE], dl
 
 main:
+    call test_print
 ;; Load 2 sectors
     mov bx, 0x9000
     mov dh, 2
@@ -25,13 +25,24 @@ main:
     mov dx, [0x9000 + 512]
     call print_hex
 
+    call switch_to_pm
+
 ;; Infinite loop, $ means the current line
     jmp $
 
-%include "./include/print.asm"  ; Include printing functions
+%include "./include/print.asm"     ; Include printing functions
 %include "./include/disk_load.asm" ; Include disk load functions
+%include "./include/gdt.asm"       ; Inclue GDT
+%include "./include/switch_pm.asm" ; Include code for switching to PM
 
+[bits 32]
+
+MAIN32:
+    mov ebx, MSG_PROT_MODE
+    call print_string32
+    jmp $
 BOOT_DRIVE: db 0
+MSG_PROT_MODE: db "Successfully in 32-bit Protected Mode",0
 
 ;;; End!
 ;; Pad up with zeros and magic number to 512
