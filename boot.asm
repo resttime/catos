@@ -1,29 +1,16 @@
 ;; Start memory address offset at bootloader
 [org 0x7c00]
+KERNEL_OFFSET: equ 0x1000       ; Offset of code in kernel
 
-;; https://en.wikipedia.org/wiki/INT_10H
-;; Using the 0x10h BIOS interrupt
+    mov [BOOT_DRIVE], dl ; Store boot drive
 
-;; Place the stack where it won't ovewrite things
-    mov bp, 0x8000
+    mov bp, 0x9000 ; Place the stack where it won't ovewrite things
     mov sp, bp
 
-;; Store boot drive
-    mov [BOOT_DRIVE], dl
+    mov bx, MSG_REAL_MODE
+    call print_string
 
-main:
-    call test_print
-;; Load 2 sectors
-    mov bx, 0x9000
-    mov dh, 2
-    mov dl, [BOOT_DRIVE]
-    call disk_load
-
-    mov dx, [0x9000]
-    call print_hex
-
-    mov dx, [0x9000 + 512]
-    call print_hex
+    call load_kernel
 
     call switch_to_pm
 
@@ -35,21 +22,33 @@ main:
 %include "./include/gdt.asm"       ; Inclue GDT
 %include "./include/switch_pm.asm" ; Include code for switching to PM
 
+[bits 16]
+load_kernel:
+    mov bx, MSG_LOAD_KERNEL
+    call print_string
+
+;; Load kernel from disk by reading 15 sectors after the bootloader
+    mov bx, KERNEL_OFFSET
+    mov dh, 15
+    mov dl, [BOOT_DRIVE]
+    call disk_load
+
+    ret
+
 [bits 32]
 
 MAIN32:
     mov ebx, MSG_PROT_MODE
     call print_string32
+    call KERNEL_OFFSET
     jmp $
+
 BOOT_DRIVE: db 0
+MSG_REAL_MODE: db "Started in 16-bit Real Mode",10,13,0
 MSG_PROT_MODE: db "Successfully in 32-bit Protected Mode",0
+MSG_LOAD_KERNEL: db "Loading kernel!",10,13,0
 
 ;;; End!
 ;; Pad up with zeros and magic number to 512
     times 510-($-$$) db 0
     dw 0xaa55
-
-;; BIOS first only loads previous 512-byte sector
-;; Let's place 2 more sectors in our disk to read from
-    times 256 dw 0xdada
-    times 256 dw 0xface
