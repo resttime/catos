@@ -9,5 +9,5 @@ make
 ```
 ## Running
 ```sh
-./run
+make run
 ```
