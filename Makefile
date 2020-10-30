@@ -28,5 +28,5 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 
 # Cleanup!
 clean:
-	rm -r *.bin
-	rm -r kernel/*.o boot/*.bin
+	rm -rf *.bin
+	rm -rf kernel/*.o drivers/*.o boot/*.bin
