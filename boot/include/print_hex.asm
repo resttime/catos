@@ -1,3 +1,4 @@
+[bits 16]
 ;; Print hex stored in dx
 print_hex:
     ; save registers

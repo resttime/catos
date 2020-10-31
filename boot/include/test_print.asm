@@ -1,3 +1,4 @@
+[bits 16]
 ;; tests
 test_print:
     push bx
