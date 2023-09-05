@@ -1,18 +1,16 @@
 [bits 16]
 gdt_start:
 
-;; 8 byte null descriptor required for the GDT
 gdt_null:
-    dd 0x0 ; 4 bytes - 'dd' means define double word
+    ; 8 byte null descriptor required
+    dd 0x0 ; 4 bytes
     dd 0x0 ; 4 bytes
 
 ;; Code segment descriptor
 gdt_code:
-;; 4 bytes
     dw 0xffff    ; Segment Limit (0-15)
     dw 0x0       ; Base Address (0-15)
 
-;; 4 bytes
     ; Base Address (16-23)
     db 0x0
 

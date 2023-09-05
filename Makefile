@@ -5,10 +5,10 @@ OBJ = ${C_SOURCES:.c=.o}
 all: os.bin
 
 run: all
-	qemu-system-x86_64 -drive format=raw,file=os.bin,if=floppy
+	qemu-system-x86_64 -s -drive format=raw,file=os.bin
 
 # Builds our os
-os.bin: boot/boot.bin kernel.bin
+os.bin: boot/boot.bin boot/extended_boot.bin kernel.bin
 	cat $^ > os.bin
 
 # Links kernel entry and kernel
@@ -22,9 +22,12 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 # Builds bootloader
 %.o: %.asm
 	nasm $< -f elf -o $@
+%.bin: %.asm $(wildcard boot/include/*.asm)
+	nasm $< -f bin -I 'boot/include' -o $@
 
-%.bin: %.asm
-	nasm $< -f bin -I boot/ -o $@
+# Test
+test:
+	make -C test/
 
 # Cleanup!
 clean:
