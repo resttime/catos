@@ -37,11 +37,10 @@ start_lm:
     mov ss, ax                    ; Set the stack segment to the A-register.
 
     call clear_screen
-    call hello_world
-    call 0x1000
-    hlt
 
-    ret
+    call 0x8000
+
+    jmp $
 
 clear_screen:
     mov edi, 0xB8000              ; Set the destination index to 0xB8000 for video

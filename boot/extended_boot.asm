@@ -20,7 +20,7 @@ load_kernel:
 
     mov dl, [BOOT_DRIVE]
     mov bx, 0x1000              ; Memory location to read kernel into
-    mov dh, 15                  ; # of sectors to read, 512 bytes per sector
+    mov dh, 32                  ; # of sectors to read, 512 bytes per sector
     mov cl, 0x06                ; read in the kernel on sector 6
     call disk_load
 
@@ -31,5 +31,4 @@ MSG_EXTENDED_BOOT: db "Successfully entered extended boot!",10,13,0
 MSG_LOAD_KERNEL: db "Reading the kernel...",10,13,0
 
 ;; End
-times 2048-($-$$) db 0
-
+    times 2048-($-$$) db 0

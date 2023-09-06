@@ -21,10 +21,10 @@ switch_pm:
 %include "a20.asm"
 %include "gdt.asm"
 %include "print32.asm"
-%include "detect_cpuid.asm"
-%include "detect_lm.asm"
-%include "setup_paging.asm"
-%include "switch_lm.asm"
+; %include "detect_cpuid.asm"
+; %include "detect_lm.asm"
+; %include "setup_paging.asm"
+; %include "switch_lm.asm"
 
 [bits 32]
 start_pm:
@@ -43,24 +43,25 @@ start_pm:
     mov ebx, MSG_PROTECTED_MODE
     call print_string32
 
-    mov ebx, MSG_DETECTING_CPUID
-    call print_string32
-    call detect_cpuid
-
-    mov ebx, MSG_DETECTING_LM
-    call print_string32
-    call detect_lm
-
-    mov ebx, MSG_SETUP_PAGING
-    call print_string32
-    call setup_paging
-
-    mov ebx, MSG_SWITCHING_LM
-    call print_string32
-    call switch_lm
+    call 0x1000
 
     jmp $
 
+    ; mov ebx, MSG_DETECTING_CPUID
+    ; call print_string32
+    ; call detect_cpuid
+
+    ; mov ebx, MSG_DETECTING_LM
+    ; call print_string32
+    ; call detect_lm
+
+    ; mov ebx, MSG_SETUP_PAGING
+    ; call print_string32
+    ; call setup_paging
+
+    ; mov ebx, MSG_SWITCHING_LM
+    ; call print_string32
+    ; call switch_lm
 
 MSG_ENABLE_A20: db "Enabling A20 Line...",10,13,0
 MSG_DISABLE_INT: db "Disabling Interrupts...",10,13,0

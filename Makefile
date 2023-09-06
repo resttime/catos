@@ -17,7 +17,7 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 
 # Build kernel
 %.o: %.c ${HEADERS}
-	gcc -m32 -ffreestanding -c $< -o $@
+	gcc -m32 -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c $< -o $@
 
 # Builds bootloader
 %.o: %.asm
