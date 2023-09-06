@@ -1,3 +1,6 @@
+#include "../kernel/low_level.h"
+#include "../kernel/util.h"
+
 #include "screen.h"
 
 void print_char(char ch, int col, int row, char attr) {
