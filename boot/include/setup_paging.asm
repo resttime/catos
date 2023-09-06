@@ -1,11 +1,14 @@
 [bits 32]
+
+PAGE_TABLE_ENTRY: equ 0x1000
 setup_paging:
-;; Disable any previous paging
+    pusha
+;; Disable any previous paging, skip if already disabled
     mov eax, cr0                                   ; Set the A-register to control register 0.
-    and eax, 01111111111111111111111111111111b     ; Clear the PG-bit, which is bit 31.
+    and ebx, ~(1 << 31)     ; Clear the PG-bit, which is bit 31.
     mov cr0, eax                                   ; Set control register 0 to the A-register.
 ;; Clear Tables
-    mov edi, 0x1000    ; Set the destination index to 0x1000.
+    mov edi, PAGE_TABLE_ENTRY    ; Set the destination index
     mov cr3, edi       ; Set control register 3 to the destination index.
     xor eax, eax       ; Nullify the A-register.
     mov ecx, 4096      ; Set the C-register to 4096.
@@ -29,9 +32,10 @@ map_loop:
     add edi, 8                   ; Add eight to the destination index.
     loop map_loop                ; Set the next entry, loop and decrement ecx until 0
 
-;; Enable PAE paging
+    ; Setup PAE paging
     mov eax, cr4
     or eax, 1 << 5
     mov cr4, eax
 
+    popa
     ret

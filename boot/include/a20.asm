@@ -1,3 +1,4 @@
+[bits 16]
 ;; The A20 Line is an odd legacy way to enable access to all memory
 
 ;; al(out)

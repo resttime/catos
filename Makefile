@@ -13,15 +13,15 @@ os.bin: boot/boot.bin boot/extended_boot.bin kernel.bin
 
 # Links kernel entry and kernel
 kernel.bin: kernel/kernel_entry.o ${OBJ}
-	ld -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
+	ld -m elf_x86_64 -o $@ -Ttext 0x8200 $^ --oformat binary
 
 # Build kernel
 %.o: %.c ${HEADERS}
-	gcc -m32 -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c $< -o $@
+	gcc -m64 -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c $< -o $@
 
 # Builds bootloader
 %.o: %.asm
-	nasm $< -f elf -o $@
+	nasm $< -f elf64 -o $@
 %.bin: %.asm $(wildcard boot/include/*.asm)
 	nasm $< -f bin -I 'boot/include' -o $@
 
