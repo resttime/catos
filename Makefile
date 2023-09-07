@@ -2,6 +2,10 @@ C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
 HEADERS = $(wildcard kernel/*.h drivers/*.h)
 OBJ = ${C_SOURCES:.c=.o}
 
+CFLAGS = -m64 -ffreestanding -nostdlib -mno-red-zone -mno-mmx	\
+-mno-sse -mno-sse2 -Wall -Wextra -Werror -c
+LDFLAGS = -m elf_x86_64 --oformat binary -Ttext 0x8200
+
 all: os.bin
 
 run: all
@@ -13,17 +17,17 @@ os.bin: boot/boot.bin boot/extended_boot.bin kernel.bin
 
 # Links kernel entry and kernel
 kernel.bin: kernel/kernel_entry.o ${OBJ}
-	ld -m elf_x86_64 -o $@ -Ttext 0x8200 $^ --oformat binary
+	ld $(LDFLAGS) $^ -o $@
 
 # Build kernel entry and kernel
 %.o: %.asm
-	nasm $< -f elf64 -o $@
+	nasm -f elf64 $< -o $@
 %.o: %.c ${HEADERS}
-	gcc -m64 -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c $< -o $@
+	gcc $(CFLAGS) $< -o $@
 
 # Builds bootloader
 %.bin: %.asm $(wildcard boot/include/*.asm)
-	nasm $< -f bin -I 'boot/include' -o $@
+	nasm -f bin -I 'boot/include' $< -o $@
 
 # Test
 test:
