@@ -1,5 +1,6 @@
 #ifndef SCREEN_H
 #define SCREEN_H
+#include <stdint.h>
 
 #define VIDEO_ADDRESS 0xb8000
 #define MAX_ROWS 25
@@ -12,11 +13,11 @@
 #define REG_SCREEN_DATA 0x3D5
 
 void print_char(char ch, int col, int row, char attr);
-int get_screen_offset(int col, int row);
+uintptr_t get_screen_offset(int col, int row);
 int get_cursor();
 void set_cursor(int offset);
-void print_at(char *msg, int col, int row);
-void print_msg(char *msg);
+void print_at(const char *msg, int col, int row);
+void print_msg(const char *msg);
 void clear_screen();
 int handle_scrolling(int cursor_offset);
 

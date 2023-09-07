@@ -29,7 +29,9 @@ void print_char(char ch, int col, int row, char attr) {
   set_cursor(offset);
 }
 
-int get_screen_offset(int col, int row) { return (row * MAX_COLS + col) * 2; }
+uintptr_t get_screen_offset(int col, int row) {
+  return (row * MAX_COLS + col) * 2;
+}
 
 int get_cursor() {
   port_byte_out(REG_SCREEN_CTRL, 14);
@@ -47,7 +49,7 @@ void set_cursor(int offset) {
   port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset >> 8));
 }
 
-void print_at(char *msg, int col, int row) {
+void print_at(const char *msg, int col, int row) {
   if (col >= 0 && row >= 0) {
     set_cursor(get_screen_offset(col, row));
   }
@@ -56,7 +58,7 @@ void print_at(char *msg, int col, int row) {
   }
 }
 
-void print_msg(char *msg) { print_at(msg, -1, -1); }
+void print_msg(const char *msg) { print_at(msg, -1, -1); }
 
 void clear_screen() {
   for (int row = 0; row < MAX_ROWS; row++) {
@@ -73,11 +75,12 @@ int handle_scrolling(int cursor_offset) {
   }
 
   for (int i = 1; i < MAX_ROWS; i++) {
-    memcpy(get_screen_offset(0, i) + VIDEO_ADDRESS,
-           get_screen_offset(0, i - 1) + VIDEO_ADDRESS, MAX_COLS * 2);
+    memcpy((char *)(get_screen_offset(0, i) + VIDEO_ADDRESS),
+           (char *)(get_screen_offset(0, i - 1) + VIDEO_ADDRESS), MAX_COLS * 2);
   }
 
-  char *last_line = get_screen_offset(0, MAX_ROWS - 1) + VIDEO_ADDRESS;
+  char *last_line =
+      (char *)(get_screen_offset(1, MAX_ROWS - 1) + VIDEO_ADDRESS);
   for (int i = 0; i < MAX_COLS * 2; i++) {
     last_line[i] = 0;
   }
