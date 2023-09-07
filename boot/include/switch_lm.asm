@@ -15,5 +15,5 @@ switch_lm:
 
 [bits 64]
 start_lm:
-    call 0x8200
-    jmp $
+    jmp 0x8200                  ; 0x8200 is where the kernel
+                                ; entrypoint + kernel is loaded

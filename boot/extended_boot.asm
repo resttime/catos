@@ -4,10 +4,11 @@
     mov bx, MSG_EXTENDED_BOOT
     call print_string
 
+    mov bx, MSG_LOAD_KERNEL
+    call print_string
     call load_kernel
-    call switch_pm
 
-    jmp $
+    jmp switch_pm
 
 %include "print.asm"
 %include "disk_load.asm"
@@ -15,9 +16,6 @@
 
 [bits 16]
 load_kernel:
-    mov bx, MSG_LOAD_KERNEL
-    call print_string
-
     mov dl, [BOOT_DRIVE]
     mov bx, 0x8200             ; Memory location to read kernel into
     mov dh, 32                 ; # of sectors to read, 512 bytes per sector

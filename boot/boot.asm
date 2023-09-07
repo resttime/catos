@@ -4,21 +4,22 @@
 [org 0x7c00]
     mov [BOOT_DRIVE], dl        ; Save boot drive put in dl by BIOS
 
-    mov bp, 0x7000 ; Place the stack where it won't overwrite things
+    mov bp, 0x7c00 ; Place the stack where it won't overwrite
+                   ; things. Stack grows down so pushing to it won't
+                   ; overwrite the bootloader in memory.
     mov sp, bp
 
+    mov bx, MSG_LOAD_EXTENDED_BOOT
+    call print_string
     call load_extended_boot
 
-    mov dl, [BOOT_DRIVE]        ; Pass boot drive to extended boot
+    mov dl, [BOOT_DRIVE]        ; Pass boot drive to extended boot in dl
     jmp EXTENDED_BOOT_SPACE
 
 %include "print.asm"
 %include "disk_load.asm"
 
 load_extended_boot:
-    mov bx, MSG_LOAD_EXTENDED_BOOT
-    call print_string
-
     mov bx, EXTENDED_BOOT_SPACE ; Memory location to read kernel into
     mov dl, [BOOT_DRIVE]
     mov dh, 2                   ; # of sectors to read, 512 bytes per sector

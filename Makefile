@@ -15,13 +15,13 @@ os.bin: boot/boot.bin boot/extended_boot.bin kernel.bin
 kernel.bin: kernel/kernel_entry.o ${OBJ}
 	ld -m elf_x86_64 -o $@ -Ttext 0x8200 $^ --oformat binary
 
-# Build kernel
+# Build kernel entry and kernel
+%.o: %.asm
+	nasm $< -f elf64 -o $@
 %.o: %.c ${HEADERS}
 	gcc -m64 -ffreestanding -nostdlib -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -c $< -o $@
 
 # Builds bootloader
-%.o: %.asm
-	nasm $< -f elf64 -o $@
 %.bin: %.asm $(wildcard boot/include/*.asm)
 	nasm $< -f bin -I 'boot/include' -o $@
 
@@ -33,3 +33,4 @@ test:
 clean:
 	rm -rf *.bin
 	rm -rf kernel/*.o drivers/*.o boot/*.bin
+	make -C test/ clean

@@ -37,7 +37,8 @@ start_pm:
     mov gs, ax
 
     ; Update stack to new position
-    mov ebp, 0x90000
+    mov ebp, 0x80000            ; edge of free memory of real mode
+                                ; memory layout
     mov esp, ebp
 
     mov ebx, MSG_PROTECTED_MODE
@@ -54,7 +55,7 @@ start_pm:
 
     mov ebx, MSG_SWITCHING_LM
     call print_string32
-    call switch_lm
+    jmp switch_lm
 
 MSG_ENABLE_A20: db "Enabling A20 Line...",10,13,0
 MSG_DISABLE_INT: db "Disabling Interrupts...",10,13,0
@@ -62,4 +63,4 @@ MSG_LOADING_GDT: db "Loading GDT...",10,13,0
 MSG_PROTECTED_MODE: db "Started 32-bit Protected Mode!",0
 MSG_DETECTING_LM: db "Detecting Long Mode...",0
 MSG_SETUP_LM: db "Setting Up GDT and Paging for Long Mode...",0
-MSG_SWITCHING_LM: db "Switcing to Long Mode",0
+MSG_SWITCHING_LM: db "Switching to Long Mode",0
