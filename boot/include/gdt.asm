@@ -6,7 +6,7 @@ gdt_null:
     dd 0x0 ; 4 bytes
     dd 0x0 ; 4 bytes
 
-;; Code segment descriptor
+;; Code segment descriptor (8 bytes)
 gdt_code:
     dw 0xffff    ; Segment Limit (0-15)
     dw 0x0       ; Base Address (0-15)
@@ -38,7 +38,7 @@ gdt_code:
     ; Base (24-32)
     db 0x0
 
-;; Data segment descriptor
+;; Data segment descriptor (8 bytes)
 gdt_data:
     dw 0xffff
     dw 0x0

@@ -19,7 +19,7 @@ load_kernel:
     mov dl, [BOOT_DRIVE]
     mov bx, 0x8200             ; Memory location to read kernel into
     mov dh, 32                 ; # of sectors to read, 512 bytes per sector
-    mov cl, 0x4               ; read kernel on sector
+    mov cl, 0x4                ; read kernel on sector
     call disk_load
 
     ret

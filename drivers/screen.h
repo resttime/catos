@@ -6,7 +6,7 @@
 #define MAX_ROWS 25
 #define MAX_COLS 80
 
-#define WHITE_ON_BLACK 0x0f
+#define WHITE_ON_BLACK 0x0f // ((FG & 0x0F) << 4) | ((BG & 0x0F))
 
 // I/O Ports
 #define REG_SCREEN_CTRL 0x3D4
