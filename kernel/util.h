@@ -1,4 +1,3 @@
-#ifndef UTIL_H
-#define UTIL_H
+#pragma once
+
 void memcpy(const char *src, char *dest, int size);
-#endif

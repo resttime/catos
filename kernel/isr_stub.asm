@@ -1,17 +1,39 @@
+[bits 64]
+
 %macro isr_err_stub 1
     isr_stub_%+%1:
-    call exception_handler
-    iretq
+    cli                         ; Clear Interrupt Flag
+
+    ; CPU pushes rip, cs, rflags, rsp, dss onto stack
+    ; CPU also pushes corresponding error code
+    push byte %1                ; isr enum
+    mov rdi, rsp ; C arg points to the processor state
+    call exception_handler_%1
+    add esp, 8                  ; pops isr enum
+    add esp, 8                  ; pops hidden CPU error code push
+    iretq ; pops rip, cs, rflags, rsp, ss. restores interrupt flag
 %endmacro
 
 ;; if writing for 64-bit, use iretq instead
 %macro isr_no_err_stub 1
     isr_stub_%+%1:
-    call exception_handler
+    cli                         ; Clear Interrupt Flag
+
+    push byte 0                 ; no errcode, for alignment
+    push byte %1                ; isr enum
+    mov rdi, rsp
+    call exception_handler_%1
+    add esp, 8                  ; pops isr enum
+    add esp, 8                  ; pops alignment padding
     iretq
 %endmacro
 
-extern exception_handler
+%assign i 0
+%rep    32
+extern exception_handler_%+i
+%assign i i+1
+%endrep
+
     isr_no_err_stub 0
     isr_no_err_stub 1
     isr_no_err_stub 2

@@ -1,3 +1,5 @@
+.PHONY: kernel/kernel.bin test clean
+
 all: os.bin
 
 run: all

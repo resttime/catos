@@ -1,5 +1,5 @@
-#ifndef SCREEN_H
-#define SCREEN_H
+#pragma once
+
 #include <stdint.h>
 
 #define VIDEO_ADDRESS 0xb8000
@@ -20,5 +20,3 @@ void print_at(const char *msg, int col, int row);
 void print_msg(const char *msg);
 void clear_screen();
 int handle_scrolling(int cursor_offset);
-
-#endif

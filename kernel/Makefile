@@ -1,11 +1,11 @@
-ASM_SOURCES = kernel_entry.asm isr.asm
-C_SOURCES = $(wildcard *.c ../drivers/*.c)
-HEADERS = $(wildcard *.h ../drivers/*.h)
+ASM_SOURCES = kernel_entry.asm isr_stub.asm irq_stub.asm
+C_SOURCES = $(wildcard *.c)
+HEADERS = $(wildcard *.h)
 OBJ = ${ASM_SOURCES:.asm=.o} ${C_SOURCES:.c=.o}
 
 CFLAGS = -m64 -ffreestanding -nostdlib -fno-builtin	\
 -fno-stack-protector -nostartfiles -nodefaultlibs -mno-red-zone	\
--mno-mmx -mno-sse -mno-sse2 -Wall -Wextra -Werror -c
+-mno-mmx -mno-sse -mno-sse2 -Wall -Wextra -c -g # -Werror -c
 
 LDFLAGS = -m elf_x86_64 --oformat binary -Ttext 0x8200
 
